@@ -1,0 +1,32 @@
+// quick_table.rb の quick_table 用の stylesheet
+
+.quick_table
+  overflow-x: auto
+  margin: 0px
+  &.depth_0
+    margin: 0.5em 0px
+  caption, .title
+    text-align: left
+    font-size: 80%
+  table
+    font-size: xx-small
+    margin: 0px
+    padding: 0px
+    background: #dddddd
+    border-collapse: separate
+    border-spacing: 2px
+    tr:nth-child(odd)
+      background: #eeeeee
+    tr:nth-child(even)
+      background: #ffffff
+    th, td
+      font-size: 10px
+      font-weight: bold
+      color: #555
+      padding: 3px
+      white-space: nowrap
+    a
+      color: inherit
+      text-decoration: none
+      &:hover
+        text-decoration: underline
