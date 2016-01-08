@@ -3,24 +3,24 @@
 
 * Examples
 
-: quick_table { :a }
-:   [a]
-: 
-: quick_table { [:a, 1] }
-:   [a][1]
-: 
-: quick_table { [:a, 1, :b, 2] }
-:   [a][1][b][2]
-: 
-: quick_table { [[:a, 1], [:b, 2]] }
-:   [a][1]
-:   [b][2]
-: 
-: quick_table { {:a => 1, :b => 2} }
-:   [a][1]
-:   [b][2]
-: 
-: quick_table(:array_of_hash => true) { [{:a => 1, :b => 2}, {:a => 3, :b => 4}] }
-:   [a][b]
-:   [1][2]
-:   [3][4]
+#+BEGIN_SRC ruby
+quick_table { {:a => 1, :b => 2} }
+# => [a][1]
+# => [b][2]
+
+quick_table { [{:a => 1, :b => 2}, {:a => 3, :b => 4}] }
+# => [a][b]
+# => [1][2]
+# => [3][4]
+
+quick_table { [[:a, :b], [ 1,  2], [ 3,  4]] }
+# => [a][b]
+# => [1][2]
+# => [3][4]
+
+quick_table { [:a, :b] }
+# => [a][b]
+
+quick_table { :a }
+# => [a]
+#+END_SRC

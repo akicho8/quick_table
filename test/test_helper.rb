@@ -1,26 +1,20 @@
-require "test/unit"
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'quick_table'
-require "#{__dir__}/../app/helpers/quick_table_helper"
+# Configure Rails Environment
+ENV["RAILS_ENV"] = "test"
 
-require "rails"
-require 'erb'
-require 'cgi'
-require 'active_support/core_ext/class/attribute_accessors'
-require 'action_pack'
-require 'action_view/helpers/capture_helper'
-require 'action_view/helpers/sanitize_helper'
-require 'action_view/helpers/output_safety_helper'
-require 'action_view/helpers/url_helper'
-require 'action_view/helpers/tag_helper'
-require 'action_view/helpers/text_helper'
+require File.expand_path("../../test/dummy/config/environment.rb",  __FILE__)
+ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../test/dummy/db/migrate", __FILE__)]
+require "rails/test_help"
 
-class ViewContext
-  include ActionView::Helpers::CaptureHelper
-  include ActionView::Helpers::TextHelper
-  include ActionView::Helpers::SanitizeHelper
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::OutputSafetyHelper
-  include QuickTableHelper
+# Filter out Minitest backtrace while allowing backtrace from other libraries
+# to be shown.
+Minitest.backtrace_filter = Minitest::BacktraceFilter.new
+
+# Load support files
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+
+# Load fixtures from the engine
+if ActiveSupport::TestCase.respond_to?(:fixture_path=)
+  ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
+  ActionDispatch::IntegrationTest.fixture_path = ActiveSupport::TestCase.fixture_path
+  ActiveSupport::TestCase.fixtures :all
 end
