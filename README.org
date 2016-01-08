@@ -1,6 +1,8 @@
 #+OPTIONS: toc:nil num:nil author:nil creator:nil \n:nil |:t
 #+OPTIONS: @:t ::t ^:t -:t f:t *:t <:t
 
+Convert object to table html
+
 * Examples
 
 #+BEGIN_SRC ruby
@@ -23,9 +25,11 @@ quick_table { [:a, :b] }
 
 quick_table { :a }
 # => [a]
+#+END_SRC
 
 ** Options
 
+#+BEGIN_SRC ruby
 quick_table(:skip_header => false) { [{:a => 1, :b => 2}, {:a => 3, :b => 4}] }
 # => [1][2]
 # => [3][4]
