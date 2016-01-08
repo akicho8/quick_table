@@ -38,10 +38,13 @@ module QuickTable
 
       return if obj.blank?
 
-      options = {:depth => 0}.merge(options)
+      options = {
+        :skip_header => false,
+        :depth  => 0,
+      }.merge(options)
 
       info = function_table.find { |e| e[:if].call(obj) }
-      body = info[:func].call(obj)
+      body = info[:code].call(obj, options)
 
       if true
         if options[:caption].present?
@@ -71,7 +74,7 @@ module QuickTable
         # [b][2]
         {
           :if   => -> obj { obj.kind_of?(Hash) },
-          :func => -> obj {
+          :code => -> obj, options {
             obj.collect {|key, val|
               tr do
                 th(key) + td(val)
@@ -86,11 +89,14 @@ module QuickTable
         # [3][4]
         {
           :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Hash)} },
-          :func => -> obj {
+          :code => -> obj, options {
             keys = obj.inject([]) { |a, e| a | e.keys }
-            body = tag(:thead) do
-              tr do
-                keys.collect {|e| th(e) }.join.html_safe
+            body = "".html_safe
+            unless options[:skip_header]
+              body += tag(:thead) do
+                tr do
+                  keys.collect {|e| th(e) }.join.html_safe
+                end
               end
             end
             body + tag(:tbody) do
@@ -109,7 +115,7 @@ module QuickTable
         # [3][4]
         {
           :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Array)} },
-          :func => -> obj {
+          :code => -> obj, options {
             body = tag(:tbody) do
               obj.collect { |elems|
                 tr do
@@ -124,7 +130,7 @@ module QuickTable
         # [a][b]
         {
           :if   => -> obj { obj.kind_of?(Array) },
-          :func => -> obj {
+          :code => -> obj, options {
             tag(:tbody) do
               tr do
                 obj.collect { |e| td(e) }.join.html_safe
@@ -137,7 +143,7 @@ module QuickTable
         # [a]
         {
           :if   => -> obj { true },
-          :func => -> obj {
+          :code => -> obj, options {
             tag(:tbody) do
               tr { td(obj) }
             end
