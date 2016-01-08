@@ -12,3 +12,6 @@
 
 <%= quick_table(options.merge(:responsive => true, :title => "title")) { "あ" * 100 } %>
 <%= quick_table(options.merge(:responsive => true, :caption => "caption")) { "あ" * 100 } %>
+
+<% v1 = [{:a => 1, :b => 2}, {:a => 3, :b => 4}] %>
+<%= quick_table(options) { [{:a => v1}] } %>

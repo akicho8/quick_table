@@ -9,14 +9,6 @@ module QuickTable
     alias h view_context
 
     def self.htmlize(view_context, *args, &block)
-      new(view_context).htmlize(*args, &block)
-    end
-
-    def initialize(view_context)
-      @view_context = view_context
-    end
-
-    def htmlize(*args, &block)
       if block_given?
         obj = yield
         options = args.extract_options!
@@ -36,33 +28,40 @@ module QuickTable
         end
       end
 
-      return if obj.blank?
+      new(view_context, options).htmlize(obj, &block)
+    end
 
-      options = {
+    def initialize(view_context, options)
+      @view_context = view_context
+      @options = {
         :skip_header => false,
         :depth  => 0,
       }.merge(options)
+    end
+
+    def htmlize(obj, &block)
+      return if obj.blank?
 
       info = function_table.find { |e| e[:if].call(obj) }
-      body = info[:code].call(obj, options)
+      body = info[:code].call(obj)
 
       if true
-        if options[:caption].present?
-          body = tag(:caption, options[:caption]) + body
+        if @options[:caption].present?
+          body = tag(:caption, @options[:caption]) + body
         end
       end
-      body = tag(:table, body, :class => table_class(options))
-      if options[:depth].zero?
-        if options[:responsive]
+      body = tag(:table, body, :class => table_class)
+      if @options[:depth].zero?
+        if @options[:responsive]
           body = tag(:div, body, :class => "table-responsive")
         end
         if true
-          if options[:title].present?
-            body = tag(:h2, options[:title], :class => "title") + body
+          if @options[:title].present?
+            body = tag(:h2, @options[:title], :class => "title") + body
           end
         end
       end
-      tag(:div, body, :class => "quick_table quick_table_depth_#{options[:depth]}")
+      tag(:div, body, :class => "quick_table quick_table_depth_#{@options[:depth]}")
     end
 
     private
@@ -74,7 +73,7 @@ module QuickTable
         # [b][2]
         {
           :if   => -> obj { obj.kind_of?(Hash) },
-          :code => -> obj, options {
+          :code => -> obj {
             obj.collect {|key, val|
               tr do
                 th(key) + td(val)
@@ -89,10 +88,10 @@ module QuickTable
         # [3][4]
         {
           :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Hash)} },
-          :code => -> obj, options {
+          :code => -> obj {
             keys = obj.inject([]) { |a, e| a | e.keys }
             body = "".html_safe
-            unless options[:skip_header]
+            unless @options[:skip_header]
               body += tag(:thead) do
                 tr do
                   keys.collect {|e| th(e) }.join.html_safe
@@ -115,8 +114,8 @@ module QuickTable
         # [3][4]
         {
           :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Array)} },
-          :code => -> obj, options {
-            body = tag(:tbody) do
+          :code => -> obj {
+            tag(:tbody) do
               obj.collect { |elems|
                 tr do
                   elems.collect { |e| td(e) }.join.html_safe
@@ -130,7 +129,7 @@ module QuickTable
         # [a][b]
         {
           :if   => -> obj { obj.kind_of?(Array) },
-          :code => -> obj, options {
+          :code => -> obj {
             tag(:tbody) do
               tr do
                 obj.collect { |e| td(e) }.join.html_safe
@@ -143,7 +142,7 @@ module QuickTable
         # [a]
         {
           :if   => -> obj { true },
-          :code => -> obj, options {
+          :code => -> obj {
             tag(:tbody) do
               tr { td(obj) }
             end
@@ -170,15 +169,15 @@ module QuickTable
 
     def value_as_string(val)
       if val.kind_of?(Array) || val.kind_of?(Hash)
-        htmlize(options.merge(:depth => options[:depth].next)) { val }
+        self.class.htmlize(view_context, @options.merge(:depth => @options[:depth].next)) { val }
       else
         val
       end
     end
 
-    def table_class(options)
+    def table_class
       # return "table table-condensed table-bordered table-striped"
-      "table #{options[:table_class]}".squish.scan(/\S+/).uniq.join(" ")
+      "table #{@options[:table_class]}".squish.scan(/\S+/).uniq.join(" ")
     end
   end
 end
