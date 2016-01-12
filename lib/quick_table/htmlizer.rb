@@ -35,7 +35,8 @@ module QuickTable
       @view_context = view_context
       @options = {
         :skip_header => false,
-        :depth  => 0,
+        :depth       => 0,
+        :nesting     => false,
       }.merge(options)
     end
 
@@ -169,15 +170,24 @@ module QuickTable
 
     def value_as_string(val)
       if val.kind_of?(Array) || val.kind_of?(Hash)
-        self.class.htmlize(view_context, @options.merge(:depth => @options[:depth].next)) { val }
+        if @options[:nesting]
+          self.class.htmlize(view_context, @options.merge(:depth => @options[:depth].next)) { val }
+        else
+          val
+        end
       else
         val
       end
     end
 
     def table_class
-      # return "table table-condensed table-bordered table-striped"
-      "table #{@options[:table_class]}".squish.scan(/\S+/).uniq.join(" ")
+      if @options[:depth] == 0
+        # return "table table-condensed table-bordered table-striped"
+        "table #{@options[:table_class]}".squish.scan(/\S+/).uniq.join(" ")
+      else
+        # 入れ子になったテーブルは小さめにして装飾を避ける
+        "table table-condensed"
+      end
     end
   end
 end
