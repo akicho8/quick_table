@@ -34,7 +34,6 @@ module QuickTable
     def initialize(view_context, options)
       @view_context = view_context
       @options = {
-        :skip_header => false,
         :depth       => 0,
         :nesting     => false,
       }.merge(options)
@@ -92,11 +91,9 @@ module QuickTable
           :code => -> obj {
             keys = obj.inject([]) { |a, e| a | e.keys }
             body = "".html_safe
-            unless @options[:skip_header]
-              body += tag(:thead) do
-                tr do
-                  keys.collect {|e| th(e) }.join.html_safe
-                end
+            body += tag(:thead) do
+              tr do
+                keys.collect {|e| th(e) }.join.html_safe
               end
             end
             body + tag(:tbody) do
