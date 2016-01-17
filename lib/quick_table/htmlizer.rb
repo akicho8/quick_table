@@ -28,7 +28,7 @@ module QuickTable
         end
       end
 
-      new(view_context, options).htmlize(obj, &block)
+      new(view_context, options).htmlize(obj)
     end
 
     def initialize(view_context, options)
@@ -39,7 +39,7 @@ module QuickTable
       }.merge(options)
     end
 
-    def htmlize(obj, &block)
+    def htmlize(obj)
       return if obj.blank?
 
       info = function_table.find { |e| e[:if].call(obj) }
