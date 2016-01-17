@@ -4,6 +4,13 @@
 #
 
 module QuickTable
+  mattr_accessor :default_options
+  self.default_options = {
+    :table_class => "",
+    :nesting     => false,
+    :title_tag   => :h2,
+  }
+
   class Htmlizer
     attr_accessor :view_context
     alias h view_context
@@ -33,10 +40,7 @@ module QuickTable
 
     def initialize(view_context, options)
       @view_context = view_context
-      @options = {
-        :depth       => 0,
-        :nesting     => false,
-      }.merge(options)
+      @options = QuickTable.default_options.merge(:depth => 0).merge(options)
     end
 
     def htmlize(obj)
@@ -57,7 +61,7 @@ module QuickTable
         end
         if true
           if @options[:title].present?
-            body = tag(:h2, @options[:title], :class => "title") + body
+            body = tag(@options[:title_tag], @options[:title], :class => "title") + body
           end
         end
       end
