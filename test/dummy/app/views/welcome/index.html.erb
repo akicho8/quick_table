@@ -10,7 +10,6 @@
   <%= quick_table(options) { :a } %>
   <%= quick_table(options) { {:a => 1, :b => 1} } %>
   <%= quick_table(options) { [{:a => 1, :b => 2}, {:a => 3, :b => 4}] } %>
-  <%= quick_table(options.merge(:skip_header => true)) { [{:a => 1, :b => 2}, {:a => 3, :b => 4}] } %>
   <%= quick_table(options) { [[:a, :b], [ 1,  2], [ 3,  4]] } %>
   <%= quick_table(options) { [:a, :b] } %>
   <%= quick_table(options) { :a } %>

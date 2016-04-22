@@ -27,14 +27,6 @@ quick_table { :a }
 # => [a]
 #+END_SRC
 
-** Options
-
-#+BEGIN_SRC ruby
-quick_table(:skip_header => false) { [{:a => 1, :b => 2}, {:a => 3, :b => 4}] }
-# => [1][2]
-# => [3][4]
-#+END_SRC
-
 ** テスト方法
 
 #+BEGIN_SRC sh
