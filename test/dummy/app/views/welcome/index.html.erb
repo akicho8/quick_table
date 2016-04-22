@@ -1,7 +1,9 @@
 <% table_class = "table table-striped table-bordered table-hover table-condensed" %>
 <% options = {:table_class => table_class} %>
 
-<%= quick_table(options) { [{"項目" => :id, "値" => [{:a => 1, :b => 2}, {:a => 1, :b => 2}]}]  } %>
+<%#= quick_table(options) { [{"項目" => :id, "値" => [{:a => 1, :b => 2}, {:a => 1, :b => 2}]}]  } %>
+<%#= quick_table(options) { {:a => 1, :b => 1} } %>
+<%= quick_table(options) { [[:a, :b], [ 1,  2], [ 3,  4]] } %>
 
 <% if false %>
   <%= quick_table(options) {} %>

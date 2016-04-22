@@ -9,6 +9,10 @@ module QuickTable
     :table_class => "",
     :nesting     => false,
     :title_tag   => :h2,
+
+    :header_patch  => true,     # ヘッダーがなければ追加する
+    :key_label   => "Key",
+    :value_label => "Value",
   }
 
   class Htmlizer
@@ -47,13 +51,20 @@ module QuickTable
       return if obj.blank?
 
       info = function_table.find { |e| e[:if].call(obj) }
-      body = info[:code].call(obj)
-
+      body = "".html_safe
       if true
         if @options[:caption].present?
-          body = tag(:caption, @options[:caption]) + body
+          body << tag(:caption, @options[:caption])
         end
       end
+      if @options[:header_patch]
+        if info[:header_patch]
+          if v = info[:header_patch].call(obj)
+            body << v
+          end
+        end
+      end
+      body << info[:code].call(obj)
       body = tag(:table, body, :class => table_class(info))
       if @options[:depth].zero?
         if @options[:responsive]
@@ -78,6 +89,13 @@ module QuickTable
         {
           :if   => -> obj { obj.kind_of?(Hash) },
           :format_class => "qt_hash_only",
+          :header_patch => -> obj {
+            tag(:thead) do
+              tr do
+                th(@options[:key_label]) + th(@options[:value_label])
+              end
+            end
+          },
           :code => -> obj {
             obj.collect {|key, val|
               tr do
@@ -119,6 +137,13 @@ module QuickTable
         {
           :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Array)} },
           :format_class => "qt_array_of_array",
+          :header_patch => -> obj {
+            if obj.first.kind_of?(Array)
+              tag(:thead) do
+                obj.first.collect { td("") }.join.html_safe # カラムの意味はわからないので空ラベルとする
+              end
+            end
+          },
           :code => -> obj {
             tag(:tbody) do
               obj.collect { |elems|
