@@ -54,7 +54,7 @@ module QuickTable
           body = tag(:caption, @options[:caption]) + body
         end
       end
-      body = tag(:table, body, :class => table_class)
+      body = tag(:table, body, :class => table_class(info))
       if @options[:depth].zero?
         if @options[:responsive]
           body = tag(:div, body, :class => "table-responsive")
@@ -77,6 +77,7 @@ module QuickTable
         # [b][2]
         {
           :if   => -> obj { obj.kind_of?(Hash) },
+          :format_class => "qt_hash_only",
           :code => -> obj {
             obj.collect {|key, val|
               tr do
@@ -92,6 +93,7 @@ module QuickTable
         # [3][4]
         {
           :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Hash)} },
+          :format_class => "qt_array_of_hash",
           :code => -> obj {
             keys = obj.inject([]) { |a, e| a | e.keys }
             body = "".html_safe
@@ -116,6 +118,7 @@ module QuickTable
         # [3][4]
         {
           :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Array)} },
+          :format_class => "qt_array_of_array",
           :code => -> obj {
             tag(:tbody) do
               obj.collect { |elems|
@@ -131,6 +134,7 @@ module QuickTable
         # [a][b]
         {
           :if   => -> obj { obj.kind_of?(Array) },
+          :format_class => "qt_array",
           :code => -> obj {
             tag(:tbody) do
               tr do
@@ -144,6 +148,7 @@ module QuickTable
         # [a]
         {
           :if   => -> obj { true },
+          :format_class => "qt_other",
           :code => -> obj {
             tag(:tbody) do
               tr { td(obj) }
@@ -181,10 +186,10 @@ module QuickTable
       end
     end
 
-    def table_class
+    def table_class(info)
       if @options[:depth] == 0
         # return "table table-condensed table-bordered table-striped"
-        "table #{@options[:table_class]}".squish.scan(/\S+/).uniq.join(" ")
+        "table #{@options[:table_class]} #{info[:format_class]}".squish.scan(/\S+/).uniq.join(" ")
       else
         # 入れ子になったテーブルは小さめにして装飾を避ける
         "table table-condensed"
