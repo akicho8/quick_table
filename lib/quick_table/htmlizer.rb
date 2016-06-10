@@ -16,10 +16,7 @@ module QuickTable
   }
 
   class Htmlizer
-    attr_accessor :view_context
-    alias h view_context
-
-    def self.htmlize(view_context, *args, &block)
+    def self.htmlize(*args, &block)
       if block_given?
         obj = yield
         options = args.extract_options!
@@ -39,11 +36,10 @@ module QuickTable
         end
       end
 
-      new(view_context, options).htmlize(obj)
+      new(options).htmlize(obj)
     end
 
-    def initialize(view_context, options)
-      @view_context = view_context
+    def initialize(options)
       @options = QuickTable.default_options.merge(:depth => 0).merge(options)
     end
 
@@ -202,7 +198,7 @@ module QuickTable
     def value_as_string(val)
       if val.kind_of?(Array) || val.kind_of?(Hash)
         if @options[:nesting]
-          self.class.htmlize(view_context, @options.merge(:depth => @options[:depth].next)) { val }
+          self.class.htmlize(@options.merge(:depth => @options[:depth].next)) { val }
         else
           val
         end
@@ -219,6 +215,10 @@ module QuickTable
         # 入れ子になったテーブルは小さめにして装飾を避ける
         "table table-condensed"
       end
+    end
+
+    def h
+      ApplicationController.helpers
     end
   end
 end
