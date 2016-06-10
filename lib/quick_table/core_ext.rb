@@ -15,16 +15,12 @@ module QuickTable
 end
 
 Kernel.class_eval do
-  def quick_table(object, **options)
-    if object.respond_to?(:to_quick_table)
-      object.to_quick_table(options)
-    else
-      QuickTable.generate(object, options)
-    end
+  def quick_table(*args, &block)
+    QuickTable.generate(*args, &block)
   end
 
-  def qt(*args)
-    quick_table(*args).display
+  def qt(*args, &block)
+    QuickTable.generate(*args, &block).display
   end
 end
 
