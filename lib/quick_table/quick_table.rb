@@ -86,17 +86,17 @@ module QuickTable
         # [a][1]
         # [b][2]
         {
-          :if   => -> obj { obj.kind_of?(Hash) },
+          :if => -> e { e.kind_of?(Hash) },
           :format_class => "qt_hash_only",
-          :header_patch => -> obj {
+          :header_patch => -> e {
             tag(:thead) do
               tr do
                 th(@options[:key_label]) + th(@options[:value_label])
               end
             end
           },
-          :code => -> obj {
-            obj.collect {|key, val|
+          :code => -> e {
+            e.collect {|key, val|
               tr do
                 th(key) + td(val)
               end
@@ -109,10 +109,10 @@ module QuickTable
         # [1][2]
         # [3][4]
         {
-          :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Hash)} },
+          :if => -> e { e.kind_of?(Array) && e.all?{|e|e.kind_of?(Hash)} },
           :format_class => "qt_array_of_hash",
-          :code => -> obj {
-            keys = obj.inject([]) { |a, e| a | e.keys }
+          :code => -> e {
+            keys = e.inject([]) { |a, e| a | e.keys }
             body = "".html_safe
             body += tag(:thead) do
               tr do
@@ -120,7 +120,7 @@ module QuickTable
               end
             end
             body + tag(:tbody) do
-              obj.collect { |hash|
+              e.collect { |hash|
                 tr do
                   keys.collect { |key| td(hash[key]) }.join.html_safe
                 end
@@ -134,18 +134,18 @@ module QuickTable
         # [1][2]
         # [3][4]
         {
-          :if   => -> obj { obj.kind_of?(Array) && obj.all?{|e|e.kind_of?(Array)} },
+          :if => -> e { e.kind_of?(Array) && e.all?{|e|e.kind_of?(Array)} },
           :format_class => "qt_array_of_array",
-          :header_patch => -> obj {
-            if obj.first.kind_of?(Array)
+          :header_patch => -> e {
+            if e.first.kind_of?(Array)
               tag(:thead) do
-                obj.first.collect { td("") }.join.html_safe # カラムの意味はわからないので空ラベルとする
+                e.first.collect { td("") }.join.html_safe # カラムの意味はわからないので空ラベルとする
               end
             end
           },
-          :code => -> obj {
+          :code => -> e {
             tag(:tbody) do
-              obj.collect { |elems|
+              e.collect { |elems|
                 tr do
                   elems.collect { |e| td(e) }.join.html_safe
                 end
@@ -157,12 +157,12 @@ module QuickTable
         # [:a, :b]
         # [a][b]
         {
-          :if   => -> obj { obj.kind_of?(Array) },
+          :if => -> e { e.kind_of?(Array) },
           :format_class => "qt_array",
-          :code => -> obj {
+          :code => -> e {
             tag(:tbody) do
               tr do
-                obj.collect { |e| td(e) }.join.html_safe
+                e.collect { |e| td(e) }.join.html_safe
               end
             end
           },
@@ -171,11 +171,11 @@ module QuickTable
         # :a
         # [a]
         {
-          :if   => -> obj { true },
+          :if => -> e { true },
           :format_class => "qt_other",
-          :code => -> obj {
+          :code => -> e {
             tag(:tbody) do
-              tr { td(obj) }
+              tr { td(e) }
             end
           },
         },
