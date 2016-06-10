@@ -53,7 +53,7 @@ module QuickTable
       body = "".html_safe
       if true
         if @options[:caption].present?
-          body << tag(:caption, @options[:caption])
+          body << content_tag(:caption, @options[:caption])
         end
       end
       if @options[:header_patch]
@@ -64,18 +64,18 @@ module QuickTable
         end
       end
       body << info[:code].call(obj)
-      body = tag(:table, body, :class => table_class(info))
+      body = content_tag(:table, body, :class => table_class(info))
       if @options[:depth].zero?
         if @options[:responsive]
-          body = tag(:div, body, :class => "table-responsive")
+          body = content_tag(:div, body, :class => "table-responsive")
         end
         if true
           if @options[:title].present?
-            body = tag(@options[:title_tag], @options[:title], :class => "title") + body
+            body = content_tag(@options[:title_tag], @options[:title], :class => "title") + body
           end
         end
       end
-      tag(:div, body, :class => "quick_table quick_table_depth_#{@options[:depth]}")
+      content_tag(:div, body, :class => "quick_table quick_table_depth_#{@options[:depth]}")
     end
 
     private
@@ -88,7 +88,7 @@ module QuickTable
         {
           :if => -> e { e.kind_of?(Hash) },
           :header_patch => -> e {
-            tag(:thead) do
+            content_tag(:thead) do
               tr do
                 th(@options[:key_label]) + th(@options[:value_label])
               end
@@ -112,12 +112,12 @@ module QuickTable
           :code => -> e {
             keys = e.inject([]) { |a, e| a | e.keys }
             body = "".html_safe
-            body += tag(:thead) do
+            body += content_tag(:thead) do
               tr do
                 keys.collect {|e| th(e) }.join.html_safe
               end
             end
-            body + tag(:tbody) do
+            body + content_tag(:tbody) do
               e.collect { |hash|
                 tr do
                   keys.collect { |key| td(hash[key]) }.join.html_safe
@@ -135,13 +135,13 @@ module QuickTable
           :if => -> e { e.kind_of?(Array) && e.all?{|e|e.kind_of?(Array)} },
           :header_patch => -> e {
             if e.first.kind_of?(Array)
-              tag(:thead) do
+              content_tag(:thead) do
                 e.first.collect { td("") }.join.html_safe # カラムの意味はわからないので空ラベルとする
               end
             end
           },
           :code => -> e {
-            tag(:tbody) do
+            content_tag(:tbody) do
               e.collect { |elems|
                 tr do
                   elems.collect { |e| td(e) }.join.html_safe
@@ -156,7 +156,7 @@ module QuickTable
         {
           :if => -> e { e.kind_of?(Array) },
           :code => -> e {
-            tag(:tbody) do
+            content_tag(:tbody) do
               tr do
                 e.collect { |e| td(e) }.join.html_safe
               end
@@ -169,7 +169,7 @@ module QuickTable
         {
           :if => -> e { true },
           :code => -> e {
-            tag(:tbody) do
+            content_tag(:tbody) do
               tr { td(e) }
             end
           },
@@ -177,20 +177,24 @@ module QuickTable
       ]
     end
 
-    def tag(*args, &block)
+    def h
+      ApplicationController.helpers
+    end
+
+    def content_tag(*args, &block)
       h.content_tag(*args, &block)
     end
 
     def tr(&block)
-      tag(:tr, &block)
+      content_tag(:tr, &block)
     end
 
     def th(val)
-      tag(:th, val)
+      content_tag(:th, val)
     end
 
     def td(val)
-      tag(:td, value_as_string(val))
+      content_tag(:td, value_as_string(val))
     end
 
     def value_as_string(val)
@@ -213,10 +217,6 @@ module QuickTable
         # 入れ子になったテーブルは小さめにして装飾を避ける
         "table table-condensed"
       end
-    end
-
-    def h
-      ApplicationController.helpers
     end
   end
 end
