@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # オブジェクトをHTMLのテーブルにして出力
 #
@@ -16,7 +15,7 @@ module QuickTable
   }
 
   class Htmlizer
-    def self.htmlize(*args, &block)
+    def self.generate(*args, &block)
       if block_given?
         obj = yield
         options = args.extract_options!
@@ -36,14 +35,14 @@ module QuickTable
         end
       end
 
-      new(options).htmlize(obj)
+      new(options).generate(obj)
     end
 
     def initialize(options)
       @options = QuickTable.default_options.merge(:depth => 0).merge(options)
     end
 
-    def htmlize(obj)
+    def generate(obj)
       return if obj.blank?
 
       info = function_table.find { |e| e[:if].call(obj) }
@@ -198,7 +197,7 @@ module QuickTable
     def value_as_string(val)
       if val.kind_of?(Array) || val.kind_of?(Hash)
         if @options[:nesting]
-          self.class.htmlize(@options.merge(:depth => @options[:depth].next)) { val }
+          self.class.generate(@options.merge(:depth => @options[:depth].next)) { val }
         else
           val
         end
