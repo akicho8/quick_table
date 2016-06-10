@@ -6,13 +6,13 @@
 module QuickTable
   mattr_accessor :default_options
   self.default_options = {
-    :table_class => "",
-    :nesting     => false,
-    :title_tag   => :h2,
+    :table_class  => "",
+    :nesting      => false,
+    :title_tag    => :h2,
 
-    :header_patch  => true,     # ヘッダーがなければ追加する
-    :key_label   => "Key",
-    :value_label => "Value",
+    :header_patch => true,     # ヘッダーがなければ追加する
+    :key_label    => "Key",
+    :value_label  => "Value",
   }
 
   class Htmlizer
