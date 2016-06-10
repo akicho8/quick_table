@@ -14,7 +14,7 @@ module QuickTable
     :value_label  => "Value",
   }
 
-  class Htmlizer
+  class Base
     def self.generate(*args, &block)
       if block_given?
         obj = yield

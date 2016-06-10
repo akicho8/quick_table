@@ -1,5 +1,5 @@
 module QuickTableHelper
   def quick_table(*args, &block)
-    QuickTable::Htmlizer.generate(*args, &block)
+    QuickTable::Base.generate(*args, &block)
   end
 end
