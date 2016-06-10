@@ -14,6 +14,10 @@ module QuickTable
     :value_label  => "Value",
   }
 
+  def self.generate(*args, &block)
+    Base.generate(*args, &block)
+  end
+
   class Base
     def self.generate(*args, &block)
       if block_given?
