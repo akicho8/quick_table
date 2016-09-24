@@ -15,6 +15,8 @@ module QuickTable
 end
 
 Kernel.class_eval do
+  private
+
   def quick_table(*args, &block)
     QuickTable.generate(*args, &block)
   end
