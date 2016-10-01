@@ -9,7 +9,7 @@ module QuickTable
     :nesting      => false,
     :title_tag    => :h2,
 
-    :header_patch => true,     # ヘッダーがなければ追加する
+    :header_patch => false,     # ヘッダーがなければ追加する
     :key_label    => "Key",
     :value_label  => "Value",
   }
