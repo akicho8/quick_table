@@ -26,10 +26,11 @@ Kernel.class_eval do
   end
 end
 
-[Array, Hash, Symbol, String, Numeric].each do |e|
+[Array, Symbol, String, Hash, Numeric, TrueClass, FalseClass, NilClass].each do |e|
   e.class_eval do
     def to_quick_table(**options)
-      QuickTable.generate(self, options)
+      table_class = [options[:table_class], "qt_#{self.class.name.underscore}"].compact.join(" ")
+      QuickTable.generate(self, options.merge(:table_class => table_class))
     end
   end
 end

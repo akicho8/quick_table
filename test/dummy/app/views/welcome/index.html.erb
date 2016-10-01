@@ -3,7 +3,9 @@
 
 <%#= quick_table(options) { [{"項目" => :id, "値" => [{:a => 1, :b => 2}, {:a => 1, :b => 2}]}]  } %>
 <%#= quick_table(options) { {:a => 1, :b => 1} } %>
-<%= quick_table(options) { [[:a, :b], [ 1,  2], [ 3,  4]] } %>
+<%#= quick_table(options) { [[:a, :b], [ 1,  2], [ 3,  4]] } %>
+<%= {:a => 1, :b => 2}.to_quick_table %>
+<%#= nil.to_quick_table %>
 
 <% if false %>
   <%= quick_table(options) {} %>

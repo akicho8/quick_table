@@ -13,3 +13,5 @@
  *= require_tree .
  *= require_self
  */
+
+ table.qt_hash > tbody > tr > th { text-align: right }
