@@ -87,6 +87,7 @@ module QuickTable
         # [b][2]
         {
           :if => -> e { e.kind_of?(Hash) },
+          :class => "hash",
           :header_patch => -> e {
             content_tag(:thead) do
               tr do
@@ -109,6 +110,7 @@ module QuickTable
         # [3][4]
         {
           :if => -> e { e.kind_of?(Array) && e.all?{|e|e.kind_of?(Hash)} },
+          :class => "qt_type_array_of_hash",
           :code => -> e {
             keys = e.inject([]) { |a, e| a | e.keys }
             body = "".html_safe
@@ -133,6 +135,7 @@ module QuickTable
         # [3][4]
         {
           :if => -> e { e.kind_of?(Array) && e.all?{|e|e.kind_of?(Array)} },
+          :class => "qt_type_array_of_array",
           :header_patch => -> e {
             if e.first.kind_of?(Array)
               content_tag(:thead) do
@@ -155,6 +158,7 @@ module QuickTable
         # [a][b]
         {
           :if => -> e { e.kind_of?(Array) },
+          :class => "qt_type_array",
           :code => -> e {
             content_tag(:tbody) do
               tr do
@@ -168,6 +172,7 @@ module QuickTable
         # [a]
         {
           :if => -> e { true },
+          :class => "qt_type_object",
           :code => -> e {
             content_tag(:tbody) do
               tr { td(e) }
@@ -212,7 +217,7 @@ module QuickTable
     def table_class(info)
       if @options[:depth] == 0
         # return "table table-condensed table-bordered table-striped"
-        "table #{@options[:table_class]}".squish.scan(/\S+/).uniq.join(" ")
+        "table #{info[:class]} #{@options[:table_class]}".squish.scan(/\S+/).uniq.join(" ")
       else
         # 入れ子になったテーブルは小さめにして装飾を避ける
         "table table-condensed"

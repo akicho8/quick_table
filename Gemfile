@@ -14,3 +14,4 @@ gemspec
 # gem 'byebug', group: [:development, :test]
 
 gem 'twitter-bootstrap-rails'
+gem 'sass-rails'
