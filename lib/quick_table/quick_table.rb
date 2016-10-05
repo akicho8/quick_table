@@ -87,7 +87,7 @@ module QuickTable
         # [b][2]
         {
           :if => -> e { e.kind_of?(Hash) },
-          :class => "hash",
+          :class => "qt_type_hash",
           :header_patch => -> e {
             content_tag(:thead) do
               tr do
