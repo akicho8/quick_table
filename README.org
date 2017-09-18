@@ -1,9 +1,6 @@
-#+OPTIONS: toc:nil num:nil author:nil creator:nil \n:nil |:t
-#+OPTIONS: @:t ::t ^:t -:t f:t *:t <:t
-
 * Convert object to table html
 
-This library is no longer under maintenance. Please use [[http://github.com/akicho8/html_format][html_format]] instead.
+I do not maintain this library anymore. Please use [[http://github.com/akicho8/html_format][html_format]] instead.
 
 ** Examples
 
