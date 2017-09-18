@@ -3,6 +3,8 @@
 
 * Convert object to table html
 
+This library is no longer under maintenance. Please use [[http://github.com/akicho8/html_format][html_format]] instead.
+
 ** Examples
 
 #+BEGIN_SRC ruby
